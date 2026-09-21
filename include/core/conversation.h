@@ -8,7 +8,8 @@
 
 class Conversation {
 public:
-    Conversation();
+    Conversation() = default;
+
     ~Conversation();
 
     Conversation(const Conversation& other);
@@ -19,11 +20,24 @@ public:
 
     void append(Message m);
 
-    std::size_t size() const noexcept;
-    const Message& at(std::size_t i) const;
+    std::size_t size() const noexcept { return count; }
 
-    const Message* begin() const noexcept;
-    const Message* end() const noexcept;
+    const Message& at(std::size_t i) const {
+        if (i >= count) {
+            throw std::out_of_range("Conversation::at: index out of range");
+        }
+        return data_ptr[i];
+    }
+
+    const Message* begin() const noexcept {
+        return data_ptr;
+    }
+    const Message* end() const noexcept {
+        if (data_ptr == nullptr) {
+            return nullptr;
+        }
+        return data_ptr + count;
+    }
 
 private:
     Message* data_ptr = nullptr;
